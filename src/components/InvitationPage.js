@@ -198,7 +198,7 @@ export default function InvitationPage() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img
                     src={img.image}
-                    alt="Gallery image"
+                    alt=""
                     className="w-full h-full object-contain"
                   />
                   {/* Overlay for better text readability */}
