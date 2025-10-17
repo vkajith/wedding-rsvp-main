@@ -16,6 +16,7 @@ export default function InvitationPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const galleryImages = [
     {
@@ -106,6 +107,16 @@ export default function InvitationPage() {
     try {
       await api.saveRSVP(formData);
       setFormSubmitted(true);
+
+      // Only show celebration for joyful acceptance
+      if (formData.status === "accepted") {
+        setShowCelebration(true);
+        // Hide celebration after 3 seconds
+        setTimeout(() => {
+          setShowCelebration(false);
+        }, 3000);
+      }
+
       setFormData({
         name: "",
         phone: "",
@@ -124,9 +135,87 @@ export default function InvitationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+      {/* Party Popper Celebration Animation */}
+      {showCelebration && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          {/* Confetti that shoots out from center */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(100)].map((_, i) => {
+              const angle = (i / 100) * 360;
+              const distance = 200 + Math.random() * 300;
+              const x = Math.cos((angle * Math.PI) / 180) * distance;
+              const y = Math.sin((angle * Math.PI) / 180) * distance;
+              const colors = [
+                "#ff6b6b",
+                "#4ecdc4",
+                "#45b7d1",
+                "#96ceb4",
+                "#feca57",
+                "#ff9ff3",
+                "#ff7675",
+                "#74b9ff",
+              ];
+
+              return (
+                <div
+                  key={i}
+                  className="absolute w-3 h-3 rounded-full"
+                  style={{
+                    backgroundColor:
+                      colors[Math.floor(Math.random() * colors.length)],
+                    left: "50%",
+                    top: "50%",
+                    "--x": `${x}px`,
+                    "--y": `${y}px`,
+                    animation: `partyPopper 2s ease-out forwards`,
+                    animationDelay: `${Math.random() * 0.5}s`,
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          {/* Success Message with Party Popper Emoji */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white rounded-3xl p-8 shadow-2xl text-center transform scale-0 animate-partyMessage">
+              <div className="text-8xl mb-4 animate-bounce">🎊</div>
+              <h2 className="text-4xl font-bold text-green-600 mb-2">
+                RSVP Accepted!
+              </h2>
+              <p className="text-gray-600 text-lg">
+                We can't wait to celebrate with you!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Alex+Brush&display=swap');
         @keyframes float{0%,100%{transform:translateY(0) rotate(0deg);opacity:0.1}50%{transform:translateY(-30px) rotate(180deg);opacity:0.3}}
+        @keyframes partyPopper {
+          0% {
+            transform: translate(-50%, -50%) translate(0, 0) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(0.5);
+            opacity: 0;
+          }
+        }
+        @keyframes partyMessage {
+          0% {
+            transform: scale(0) rotate(-10deg);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.1) rotate(5deg);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+          }
+        }
         .font-wedding { font-family: 'Great Vibes', cursive; font-weight: 400; }
         .font-elegant { font-family: 'Playfair Display', serif; font-weight: 500; }
         .font-body { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
