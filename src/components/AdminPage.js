@@ -3,7 +3,6 @@ import {
   Heart,
   Clock,
   Users,
-  Mail,
   Search,
   Download,
   Lock,
@@ -17,7 +16,6 @@ export default function AdminPage() {
   const [rsvps, setRsvps] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [invitationsSent] = useState(50);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
