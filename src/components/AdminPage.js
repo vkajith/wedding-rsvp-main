@@ -163,12 +163,6 @@ export default function AdminPage() {
             <div className="grid md:grid-cols-5 gap-4 mb-8">
               {[
                 {
-                  icon: Mail,
-                  color: "blue",
-                  value: invitationsSent,
-                  label: "Sent",
-                },
-                {
                   icon: Heart,
                   color: "green",
                   value: accepted,

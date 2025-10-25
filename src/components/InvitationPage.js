@@ -176,8 +176,8 @@ export default function InvitationPage() {
           </div>
 
           {/* Success Message with Party Popper Emoji */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-white rounded-3xl p-8 shadow-2xl text-center transform scale-0 animate-partyMessage">
+          <div className="absolute inset-0 flex items-center justify-center margin-auto">
+            <div className="bg-white rounded-3xl p-8 shadow-2xl text-center transform scale-0 animate-partyMessage justify-center">
               <div className="text-8xl mb-4 animate-bounce">🎊</div>
               <h2 className="text-4xl font-bold text-green-600 mb-2">
                 RSVP Accepted!
@@ -244,7 +244,7 @@ export default function InvitationPage() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Heart className="w-6 h-6 text-rose-400 animate-pulse" />
-            <span className="font-wedding text-2xl text-gray-800">C & A</span>
+            <span className="font-wedding text-2xl text-gray-800">Wedding Bells are ringing!</span>
           </div>
         </div>
       </nav>
@@ -253,7 +253,7 @@ export default function InvitationPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-rose-100/50 via-transparent to-transparent" />
         <div className="relative z-10 text-center px-4">
           <Heart className="w-20 h-20 text-rose-400 mx-auto mb-8 animate-pulse" />
-          <h1 className="text-7xl md:text-9xl font-wedding text-gray-800 mb-6">
+          <h1 className="text-7xl md:text-9xl text-gray-800 mb-6">
             Chinju <span className="text-rose-400">&</span> Ashwin
           </h1>
           <div className="h-1 w-40 bg-gradient-to-r from-transparent via-rose-400 to-transparent mx-auto mb-8" />
@@ -394,15 +394,15 @@ export default function InvitationPage() {
                   <div className="flex gap-3">
                     <Clock className={`w-5 h-5 text-${event.color}-400 mt-1`} />
                     <div>
-                      <p className="font-semibold">{event.time}</p>
-                      <p className="text-sm text-gray-600">{event.date}</p>
+                      <p className="font-elegant text-xl font-semibold font-size[32pxs]">{event.time}</p>
+                      <p className="text-md text-gray-600">{event.date}</p>
                     </div>
                   </div>
                   <div className="flex gap-3">
                     <MapPin
                       className={`w-5 h-5 text-${event.color}-400 mt-1`}
                     />
-                    <div>
+                    <div className="text-lg">
                       <p className="font-semibold">{event.venue}</p>
                       <p className="text-sm text-gray-600">{event.address}</p>
                     </div>
@@ -446,9 +446,6 @@ export default function InvitationPage() {
             </div>
             <h2 className="text-5xl font-wedding text-gray-800 mb-2">RSVP</h2>
             <div className="h-px w-32 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-3"></div>
-            <p className="text-gray-600 font-body italic">
-              Kindly respond by December 1st
-            </p>
           </div>
 
           {formSubmitted ? (
