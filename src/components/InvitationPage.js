@@ -604,6 +604,23 @@ export default function InvitationPage() {
                     </svg>
                   </div>
                   
+                  {/* Separate action button above map */}
+                  <div className="mb-4 flex justify-center">
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`px-6 py-2 bg-${event.color}-600 text-white rounded-full shadow-lg hover:bg-${event.color}-700 transition-colors duration-200 flex items-center gap-2 font-cinzel border border-gray-300 hover:border-gray-400`}
+                    >
+                      <span className="tracking-wide uppercase font-semibold text-gray-900 drop-shadow-sm">
+                        Open in Maps
+                      </span>
+                      <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200 drop-shadow-sm" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </a>
+                  </div>
+
                   {/* Map container with fancy border */}
                   <div className="h-56 overflow-hidden rounded-xl border-4 border-white shadow-inner relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/30 pointer-events-none z-10"></div>
@@ -618,33 +635,9 @@ export default function InvitationPage() {
                       className="filter grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
                   </div>
-                  
-                  
-                  {/* removed: gradient overlay cleanup for clarity */}
-                  {/* removed: decorative map pin for cleaner UI */}
-                  <div className={`absolute top-4 right-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center z-20 animate-pulse`}>
-                    <svg className={`w-5 h-5 text-${event.color}-500`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  
-                  {/* Action button with enhanced styling */}
-                  <a
-                    href={event.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-${event.color}-600 bg-opacity-100 opacity-100 text-white rounded-full shadow-lg hover:bg-${event.color}-700 transition-colors duration-200 flex items-center gap-2 font-cinzel z-[10] border border-gray-300 hover:border-gray-400`}
-                  >
-                    <span className="relative opacity-100">
-                      {/* removed tooltip for simplicity */}
-                      <span className="tracking-wide uppercase font-semibold text-black drop-shadow-sm">
-                        Open in Maps
-                      </span>
-                    </span>
-                    <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200 drop-shadow-sm" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </a>
+
+
+
                 </div>
               </div>
             ))}
