@@ -17,6 +17,39 @@ export default function InvitationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [showCelebration, setShowCelebration] = useState(false);
+  const [submittedRSVP, setSubmittedRSVP] = useState(null);
+
+  // Calendar event definitions for accepted events
+  const calendarEvents = {
+    wedding: {
+      title: "Wedding Ceremony",
+      location: "Girideepam Convention Center, Nalanchira, Thiruvananthapuram",
+      details: "Join us to celebrate the wedding.",
+      start: "20251223T110000",
+      end: "20251223T120000",
+      timezone: "Asia/Kolkata",
+    },
+    reception: {
+      title: "Wedding Reception",
+      location: "Adathara Auditorium, Sulthan Bathery, Wayanad",
+      details: "Celebrate with us at the reception.",
+      start: "20251226T180000",
+      end: "20251226T220000",
+      timezone: "Asia/Kolkata",
+    },
+  };
+
+  const getGoogleCalendarUrl = (evt) => {
+    const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+    const params = new URLSearchParams({
+      text: evt.title,
+      dates: `${evt.start}/${evt.end}`,
+      details: evt.details,
+      location: evt.location,
+      ctz: evt.timezone,
+    });
+    return `${base}&${params.toString()}`;
+  };
 
   const galleryImages = [
     {
@@ -106,6 +139,7 @@ export default function InvitationPage() {
 
     try {
       await api.saveRSVP(formData);
+      setSubmittedRSVP(formData);
       setFormSubmitted(true);
 
       // Only show celebration for joyful acceptance
@@ -190,7 +224,7 @@ export default function InvitationPage() {
         </div>
       )}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Alex+Brush&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Alex+Brush&family=Tangerine:wght@400;700&family=Cinzel:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
         @keyframes float{0%,100%{transform:translateY(0) rotate(0deg);opacity:0.1}50%{transform:translateY(-30px) rotate(180deg);opacity:0.3}}
         @keyframes partyPopper {
           0% {
@@ -216,11 +250,37 @@ export default function InvitationPage() {
             opacity: 1;
           }
         }
+        @keyframes gentle-sway {
+          0%, 100% { transform: rotate(-1deg); }
+          50% { transform: rotate(1deg); }
+        }
+        @keyframes fade-in-up {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
         .font-wedding { font-family: 'Great Vibes', cursive; font-weight: 400; }
         .font-elegant { font-family: 'Playfair Display', serif; font-weight: 500; }
         .font-body { font-family: 'Cormorant Garamond', serif; font-weight: 400; }
         .font-script { font-family: 'Dancing Script', cursive; font-weight: 500; }
         .font-brush { font-family: 'Alex Brush', cursive; font-weight: 400; }
+        .font-tangerine { font-family: 'Tangerine', cursive; font-weight: 700; }
+        .font-cinzel { font-family: 'Cinzel', serif; font-weight: 500; }
+        .font-lora { font-family: 'Lora', serif; font-weight: 400; }
+        .text-shadow-elegant { text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .drop-cap:first-letter { 
+          font-family: 'Tangerine', cursive; 
+          float: left; 
+          font-size: 4em; 
+          line-height: 0.8; 
+          padding-right: 0.1em;
+          color: #be185d;
+        }
+        .animate-gentle-sway {
+          animation: gentle-sway 3s ease-in-out infinite;
+        }
+        .animate-fade-in-up {
+          animation: fade-in-up 1s ease-out forwards;
+        }
       `}</style>
 
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -251,30 +311,111 @@ export default function InvitationPage() {
 
       <div className="relative h-screen flex items-center justify-center overflow-hidden pt-16">
         <div className="absolute inset-0 bg-gradient-to-b from-rose-100/50 via-transparent to-transparent" />
-        <div className="relative z-10 text-center px-4">
+        
+        {/* Decorative corner elements */}
+        <div className="absolute top-32 left-8 md:left-32 w-24 h-24 border-l-2 border-t-2 border-rose-300 opacity-70"></div>
+        <div className="absolute top-32 right-8 md:right-32 w-24 h-24 border-r-2 border-t-2 border-rose-300 opacity-70"></div>
+        <div className="absolute bottom-32 left-8 md:left-32 w-24 h-24 border-l-2 border-b-2 border-rose-300 opacity-70"></div>
+        <div className="absolute bottom-32 right-8 md:right-32 w-24 h-24 border-r-2 border-b-2 border-rose-300 opacity-70"></div>
+        
+        {/* Decorative flourishes */}
+        <div className="absolute top-40 left-1/2 -translate-x-1/2 w-64 h-64 opacity-10">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-rose-400 fill-current">
+            <path d="M50,0 C50,50 0,50 0,50 C0,50 50,50 50,100 C50,50 100,50 100,50 C100,50 50,50 50,0 Z" />
+          </svg>
+        </div>
+        
+        <div className="relative z-10 text-center px-4 animate-fade-in-up">
           <Heart className="w-20 h-20 text-rose-400 mx-auto mb-8 animate-pulse" />
-          <h1 className="text-7xl md:text-9xl text-gray-800 mb-6">
-            Chinju <span className="text-rose-400">&</span> Ashwin
-          </h1>
-          <div className="h-1 w-40 bg-gradient-to-r from-transparent via-rose-400 to-transparent mx-auto mb-8" />
-          <p className="text-xl md:text-2xl text-gray-600 font-elegant tracking-widest mb-10">
+          
+          {/* Enhanced heading with elegant styling */}
+          <div className="relative">
+            <h1 className="text-7xl md:text-9xl font-tangerine text-gray-800 mb-6 text-shadow-elegant">
+              Chinju <span className="text-rose-400 animate-gentle-sway inline-block">&</span> Ashwin
+            </h1>
+            
+            {/* Decorative swashes around names */}
+            <div className="absolute -left-4 top-1/2 -translate-y-1/2 text-rose-300 opacity-30 hidden md:block">
+              <svg className="w-16 h-32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 4C12 4 12 20 4 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </div>
+            <div className="absolute -right-4 top-1/2 -translate-y-1/2 text-rose-300 opacity-30 hidden md:block">
+              <svg className="w-16 h-32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4C12 4 12 20 20 20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </div>
+          </div>
+          
+          {/* Enhanced divider with ornamental design */}
+          <div className="relative h-6 w-64 mx-auto mb-8">
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-rose-400 to-transparent absolute top-1/2 -translate-y-1/2"></div>
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1">
+              <Heart className="w-4 h-4 text-rose-400" />
+            </div>
+          </div>
+          
+          <p className="text-xl md:text-2xl text-gray-600 font-cinzel tracking-widest mb-10">
             ARE GETTING MARRIED
           </p>
-          <p className="text-2xl text-gray-500 font-body font-light">
+          <p className="text-2xl text-gray-500 font-lora font-light italic">
             December 23rd, 2025
           </p>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-32">
-        <h2 className="text-5xl font-wedding text-center text-gray-800 mb-4">
-          Our Journey
-        </h2>
-        <p className="text-center text-gray-600 mb-16 text-lg font-body">
-          Celebrating love and new beginnings
-        </p>
+      <div className="max-w-6xl mx-auto px-4 py-32 relative">
+        {/* Decorative background elements */}
+        <div className="absolute top-20 left-0 w-32 h-32 opacity-10">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-rose-400 fill-current">
+            <path d="M50,0 C50,50 0,50 0,50 C0,50 50,50 50,100 C50,50 100,50 100,50 C100,50 50,50 50,0 Z" />
+          </svg>
+        </div>
+        <div className="absolute bottom-20 right-0 w-32 h-32 opacity-10 rotate-45">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-purple-400 fill-current">
+            <path d="M50,0 C50,50 0,50 0,50 C0,50 50,50 50,100 C50,50 100,50 100,50 C100,50 50,50 50,0 Z" />
+          </svg>
+        </div>
+        
+        {/* Artistic section heading with decorative elements */}
+        <div className="relative mb-16">
+          <h2 className="text-6xl font-tangerine text-center text-gray-800 mb-4 text-shadow-elegant">
+            Our Journey
+          </h2>
+          
+          {/* Decorative flourish under heading */}
+          <div className="relative h-8 w-64 mx-auto mb-4">
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-rose-400 to-transparent absolute top-1/2 -translate-y-1/2"></div>
+            <div className="absolute left-1/4 top-1/2 -translate-y-1/2 bg-white rounded-full p-0.5">
+              <div className="w-1.5 h-1.5 bg-rose-300 rounded-full"></div>
+            </div>
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1">
+              <Heart className="w-3 h-3 text-rose-400" />
+            </div>
+            <div className="absolute left-3/4 top-1/2 -translate-y-1/2 bg-white rounded-full p-0.5">
+              <div className="w-1.5 h-1.5 bg-rose-300 rounded-full"></div>
+            </div>
+          </div>
+          
+          <p className="text-center text-gray-600 mb-4 text-lg font-lora italic">
+            Celebrating love and new beginnings
+          </p>
+          
+          {/* Decorative swirl */}
+          <div className="flex justify-center">
+            <svg className="w-32 h-8 text-rose-300 opacity-50" viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 10 Q 25 0, 50 10 Q 75 20, 100 10" stroke="currentColor" strokeWidth="1" fill="none" />
+            </svg>
+          </div>
+        </div>
 
-        <div className="relative h-[700px] rounded-3xl overflow-hidden shadow-2xl">
+        <div className="relative h-[700px] rounded-3xl overflow-hidden shadow-2xl border border-rose-100">
+          {/* Decorative corner elements on the gallery */}
+          <div className="absolute top-4 left-4 w-12 h-12 border-l-2 border-t-2 border-white/40 z-10 pointer-events-none"></div>
+          <div className="absolute top-4 right-4 w-12 h-12 border-r-2 border-t-2 border-white/40 z-10 pointer-events-none"></div>
+          <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-white/40 z-10 pointer-events-none"></div>
+          <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-white/40 z-10 pointer-events-none"></div>
+          
           {galleryImages.map((img, index) => (
             <div
               key={index}
@@ -283,24 +424,35 @@ export default function InvitationPage() {
               }`}
             >
               <div className="relative h-full">
-                {/* Background Image */}
+                {/* Blurred background version of the same image */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <img
+                    src={img.image}
+                    alt=""
+                    className="w-full h-full object-cover blur-xl scale-110 opacity-70"
+                    style={{ filter: "saturate(1.2)" }}
+                  />
+                  <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+                </div>
+                
+                {/* Main Image */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img
                     src={img.image}
                     alt=""
                     className="w-full h-full object-contain"
                   />
-                  {/* Overlay for better text readability */}
-                  <div className="absolute inset-0 bg-black/20"></div>
+                  {/* Enhanced overlay with gradient for better text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
                 </div>
 
-                {/* Content */}
+                {/* Enhanced Content */}
                 <div className="relative h-full flex items-end justify-center p-8 pb-16">
-                  <div className="text-center max-w-2xl">
+                  <div className="text-center max-w-2xl backdrop-blur-sm bg-black/10 p-6 rounded-xl border border-white/20">
                     <div className="mb-4">
-                      <Heart className="w-8 h-8 text-white mx-auto drop-shadow-lg" />
+                      <Heart className="w-8 h-8 text-white mx-auto drop-shadow-lg animate-pulse" />
                     </div>
-                    <p className="text-lg md:text-xl font-elegant text-white italic leading-relaxed drop-shadow-lg">
+                    <p className="text-lg md:text-2xl font-script text-white leading-relaxed drop-shadow-lg">
                       "{img.quote}"
                     </p>
                   </div>
@@ -363,6 +515,7 @@ export default function InvitationPage() {
               {
                 title: "Wedding",
                 color: "rose",
+                icon: "💍",
                 time: "11:00 AM - 12:00 PM",
                 date: "December 23rd, 2025",
                 venue: "Girideepam Convention Center",
@@ -374,6 +527,7 @@ export default function InvitationPage() {
               {
                 title: "Reception",
                 color: "purple",
+                icon: "🎉",
                 time: "6:00 PM - 10:00 PM",
                 date: "December 26th, 2025",
                 venue: "Adathara Auditorium",
@@ -385,48 +539,113 @@ export default function InvitationPage() {
             ].map((event, i) => (
               <div
                 key={i}
-                className="bg-white/90 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition hover:-translate-y-1"
+                className={`relative bg-white/90 rounded-3xl p-0 shadow-xl hover:shadow-2xl transition hover:-translate-y-1 overflow-hidden group`}
               >
-                <div className="flex items-center gap-3 mb-6">
-                  <h3 className="text-3xl font-elegant">{event.title}</h3>
+                {/* Decorative background pattern */}
+                <div className="absolute inset-0 opacity-5 pointer-events-none">
+                  <div className={`absolute inset-0 bg-${event.color}-500`} style={{ 
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                    backgroundSize: '30px 30px'
+                  }}></div>
                 </div>
-                <div className="space-y-4 mb-6 font-body">
-                  <div className="flex gap-3">
-                    <Clock className={`w-5 h-5 text-${event.color}-400 mt-1`} />
-                    <div>
-                      <p className="font-elegant text-xl font-semibold font-size[32pxs]">{event.time}</p>
-                      <p className="text-md text-gray-600">{event.date}</p>
+                
+                {/* Colored accent border */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-${event.color}-300 via-${event.color}-500 to-${event.color}-300`}></div>
+                
+                {/* Content container */}
+                <div className="p-8">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className={`w-12 h-12 rounded-full bg-${event.color}-100 flex items-center justify-center text-2xl shadow-inner`}>
+                      {event.icon}
+                    </div>
+                    <h3 className="text-3xl font-tangerine text-gray-800 text-shadow-elegant">{event.title}</h3>
+                  </div>
+                  
+                  <div className="space-y-6 mb-6">
+                    <div className={`flex gap-4 p-4 rounded-xl bg-${event.color}-50/50 border border-${event.color}-100`}>
+                      <Clock className={`w-6 h-6 text-${event.color}-600 mt-1 flex-shrink-0`} />
+                      <div>
+                        <p className="font-cinzel text-xl font-semibold text-gray-900">{event.time}</p>
+                        <p className="text-md text-gray-700 font-lora">{event.date}</p>
+                      </div>
+                    </div>
+                    
+                    <div className={`flex gap-4 p-4 rounded-xl bg-${event.color}-50/50 border border-${event.color}-100`}>
+                      <MapPin className={`w-6 h-6 text-${event.color}-600 mt-1 flex-shrink-0`} />
+                      <div>
+                        <p className="font-cinzel text-lg font-semibold text-gray-900">{event.venue}</p>
+                        <p className="text-md text-gray-700 font-lora">{event.address}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-3">
-                    <MapPin
-                      className={`w-5 h-5 text-${event.color}-400 mt-1`}
+                </div>
+                
+                {/* Map section with overlay */}
+                <div className="relative">
+                  {/* Decorative corner elements */}
+                  <div className="absolute -top-2 -left-2 w-12 h-12 pointer-events-none z-10 opacity-70">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 0C55.2285 0 100 44.7715 100 100H75C75 58.5786 41.4214 25 0 25V0Z" fill={`${event.color === 'rose' ? '#FDF2F8' : '#F5F3FF'}`} />
+                    </svg>
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-12 h-12 pointer-events-none z-10 opacity-70 rotate-90">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 0C55.2285 0 100 44.7715 100 100H75C75 58.5786 41.4214 25 0 25V0Z" fill={`${event.color === 'rose' ? '#FDF2F8' : '#F5F3FF'}`} />
+                    </svg>
+                  </div>
+                  <div className="absolute -bottom-2 -left-2 w-12 h-12 pointer-events-none z-10 opacity-70 -rotate-90">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 0C55.2285 0 100 44.7715 100 100H75C75 58.5786 41.4214 25 0 25V0Z" fill={`${event.color === 'rose' ? '#FDF2F8' : '#F5F3FF'}`} />
+                    </svg>
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 w-12 h-12 pointer-events-none z-10 opacity-70 rotate-180">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 0C55.2285 0 100 44.7715 100 100H75C75 58.5786 41.4214 25 0 25V0Z" fill={`${event.color === 'rose' ? '#FDF2F8' : '#F5F3FF'}`} />
+                    </svg>
+                  </div>
+                  
+                  {/* Map container with fancy border */}
+                  <div className="h-56 overflow-hidden rounded-xl border-4 border-white shadow-inner relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/30 pointer-events-none z-10"></div>
+                    <iframe
+                      src={event.mapUrl}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      title={event.title}
+                      className="filter grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
-                    <div className="text-lg">
-                      <p className="font-semibold">{event.venue}</p>
-                      <p className="text-sm text-gray-600">{event.address}</p>
-                    </div>
                   </div>
+                  
+                  
+                  {/* removed: gradient overlay cleanup for clarity */}
+                  {/* removed: decorative map pin for cleaner UI */}
+                  <div className={`absolute top-4 right-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center z-20 animate-pulse`}>
+                    <svg className={`w-5 h-5 text-${event.color}-500`} fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  
+                  {/* Action button with enhanced styling */}
+                  <a
+                    href={event.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-${event.color}-600 bg-opacity-100 opacity-100 text-white rounded-full shadow-lg hover:bg-${event.color}-700 transition-colors duration-200 flex items-center gap-2 font-cinzel z-[10] border border-gray-300 hover:border-gray-400`}
+                  >
+                    <span className="relative opacity-100">
+                      {/* removed tooltip for simplicity */}
+                      <span className="tracking-wide uppercase font-semibold text-black drop-shadow-sm">
+                        Open in Maps
+                      </span>
+                    </span>
+                    <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200 drop-shadow-sm" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </a>
                 </div>
-                <div className="h-56 rounded-2xl overflow-hidden mb-4 shadow-lg">
-                  <iframe
-                    src={event.mapUrl}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    title={event.title}
-                  />
-                </div>
-                <a
-                  href={event.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`block text-center text-${event.color}-500 hover:text-${event.color}-600 font-medium py-2 rounded-lg hover:bg-${event.color}-50 transition font-body`}
-                >
-                  Open in Maps →
-                </a>
               </div>
             ))}
           </div>
@@ -434,126 +653,243 @@ export default function InvitationPage() {
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-20">
-        <div className="relative bg-gradient-to-br from-rose-50 via-white to-pink-50 rounded-3xl p-8 md:p-12 shadow-2xl border-4 border-double border-rose-300">
-          <div className="absolute top-4 left-4 w-12 h-12 border-l-2 border-t-2 border-rose-300"></div>
-          <div className="absolute top-4 right-4 w-12 h-12 border-r-2 border-t-2 border-rose-300"></div>
-          <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-rose-300"></div>
-          <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-rose-300"></div>
+        <div className="relative bg-gradient-to-br from-rose-50 via-white to-pink-50 rounded-3xl p-8 md:p-12 shadow-2xl border border-rose-200">
+          {/* Decorative background pattern */}
+          <div className="absolute inset-0 overflow-hidden rounded-3xl opacity-5 pointer-events-none">
+            <div className="absolute inset-0" style={{ 
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d53f8c' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              backgroundSize: '60px 60px'
+            }}></div>
+          </div>
+          
+          {/* Elegant corner decorations */}
+          <div className="absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-rose-300 rounded-tl-3xl"></div>
+          <div className="absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-rose-300 rounded-tr-3xl"></div>
+          <div className="absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-rose-300 rounded-bl-3xl"></div>
+          <div className="absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-rose-300 rounded-br-3xl"></div>
 
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart className="w-8 h-8 text-white" />
+          {/* Decorative flourishes */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6">
+            <svg className="w-24 h-12 text-rose-300" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,25 C25,0 75,0 100,25 C75,50 25,50 0,25 Z" fill="currentColor" opacity="0.2" />
+            </svg>
+          </div>
+
+          <div className="text-center mb-8 relative">
+            {/* Enhanced RSVP icon */}
+            <div className="w-20 h-20 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <Heart className="w-10 h-10 text-white animate-pulse" />
             </div>
-            <h2 className="text-5xl font-wedding text-gray-800 mb-2">RSVP</h2>
-            <div className="h-px w-32 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-3"></div>
+            
+            <h2 className="text-6xl font-tangerine text-gray-800 mb-3 text-shadow-elegant">RSVP</h2>
+            
+            {/* Decorative divider with ornamental design */}
+            <div className="relative h-6 w-48 mx-auto mb-3">
+              <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-rose-400 to-transparent absolute top-1/2 -translate-y-1/2"></div>
+              <div className="absolute left-1/4 top-1/2 -translate-y-1/2 bg-white rounded-full p-0.5">
+                <div className="w-1 h-1 bg-rose-300 rounded-full"></div>
+              </div>
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-0.5">
+                <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
+              </div>
+              <div className="absolute left-3/4 top-1/2 -translate-y-1/2 bg-white rounded-full p-0.5">
+                <div className="w-1 h-1 bg-rose-300 rounded-full"></div>
+              </div>
+            </div>
+            
+            <p className="text-gray-600 font-lora italic">We look forward to celebrating with you</p>
           </div>
 
           {formSubmitted ? (
             <div className="text-center py-12">
               <Heart className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h3 className="text-3xl font-serif mb-3">Thank You!</h3>
-              <p className="text-gray-600 mb-8">
+              <p className="text-gray-600 mb-6">
                 Your response has been recorded!
               </p>
+
+              {submittedRSVP?.status === "accepted" && (
+                <div className="mt-4">
+                  <p className="text-gray-700 mb-3 font-medium">Add to your calendar</p>
+                  <div className="flex items-center justify-center gap-3 flex-wrap">
+                    {submittedRSVP?.events?.wedding && (
+                      <a
+                        href={getGoogleCalendarUrl(calendarEvents.wedding)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                      >
+                        Add Wedding to Calendar
+                      </a>
+                    )}
+                    {submittedRSVP?.events?.reception && (
+                      <a
+                        href={getGoogleCalendarUrl(calendarEvents.reception)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                      >
+                        Add Reception to Calendar
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <button
                 onClick={() => setFormSubmitted(false)}
-                className="text-rose-500 underline hover:text-rose-600"
+                className="mt-6 text-rose-500 underline hover:text-rose-600"
               >
                 Submit another RSVP
               </button>
             </div>
           ) : (
             <div className="space-y-6">
-              <div>
-                <label className="block text-gray-700 mb-2 font-medium font-body">
+              <div className="relative">
+                <label className="block text-gray-700 mb-2 font-medium font-lora">
                   Full Name
                 </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="w-full px-4 py-3 rounded-lg border-2 border-rose-200 focus:border-rose-400 outline-none transition font-body bg-rose-50/30"
-                  placeholder="Enter your name"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-rose-200 focus:border-rose-400 outline-none transition font-lora bg-white/80 shadow-sm"
+                    placeholder="Enter your name"
+                  />
+                  <div className="absolute inset-0 pointer-events-none rounded-lg border border-white/50"></div>
+                </div>
+                <div className="absolute -right-2 -top-2 w-6 h-6 text-rose-300 opacity-50">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4C12 4 12 20 4 20" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+                  </svg>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 mb-2 font-medium font-body">
-                  Phone Number <span className="text-gray-400">(Optional)</span>
+              <div className="relative">
+                <label className="block text-gray-700 mb-2 font-medium font-lora">
+                  Phone Number <span className="text-gray-400 italic">(Optional)</span>
                 </label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  className="w-full px-4 py-3 rounded-lg border-2 border-rose-200 focus:border-rose-400 outline-none transition font-body bg-rose-50/30"
-                  placeholder="+91 98765 43210"
-                />
+                <div className="relative">
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-rose-200 focus:border-rose-400 outline-none transition font-lora bg-white/80 shadow-sm"
+                    placeholder="+91 98765 43210"
+                  />
+                  <div className="absolute inset-0 pointer-events-none rounded-lg border border-white/50"></div>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 mb-2 font-medium font-body">
+              <div className="relative">
+                <label className="block text-gray-700 mb-2 font-medium font-lora">
                   Number of Guests
                 </label>
-                <select
-                  value={formData.guests}
-                  onChange={(e) =>
-                    setFormData({ ...formData, guests: e.target.value })
-                  }
-                  className="w-full px-4 py-3 rounded-lg border-2 border-rose-200 focus:border-rose-400 outline-none transition font-body bg-rose-50/30"
-                >
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {n} Guest{n > 1 ? "s" : ""}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={formData.guests}
+                    onChange={(e) =>
+                      setFormData({ ...formData, guests: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border-2 border-rose-200 focus:border-rose-400 outline-none transition font-lora bg-white/80 shadow-sm appearance-none"
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} Guest{n > 1 ? "s" : ""}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-0 pointer-events-none rounded-lg border border-white/50"></div>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-5 h-5 text-rose-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="absolute -left-2 -bottom-2 w-6 h-6 text-rose-300 opacity-50">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4C12 4 12 20 20 20" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+                  </svg>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 mb-3 font-medium font-body text-center">
+              <div className="relative">
+                <label className="block text-gray-700 mb-4 font-medium font-lora text-center">
                   Will you be joining us?
                 </label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-3 relative">
                   <button
                     onClick={() =>
                       setFormData({ ...formData, status: "accepted" })
                     }
-                    className={`py-4 rounded-lg border-2 font-medium transition font-body ${
+                    className={`py-4 rounded-lg border-2 font-medium transition-all duration-300 font-lora relative overflow-hidden group ${
                       formData.status === "accepted"
-                        ? "border-green-400 bg-green-50 text-green-700 shadow-lg"
-                        : "border-rose-200 hover:border-green-300 bg-rose-50/30"
+                        ? "border-green-400 bg-green-50/80 text-green-700 shadow-md"
+                        : "border-rose-200 hover:border-green-300 bg-white/80 hover:shadow-sm"
                     }`}
                   >
-                    ✓ Joyfully Accept
+                    <span className="relative z-10">✓ Joyfully Accept</span>
+                    {formData.status === "accepted" && (
+                      <span className="absolute -right-1 -bottom-1 w-8 h-8 text-green-200 animate-pulse">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor" />
+                        </svg>
+                      </span>
+                    )}
                   </button>
                   <button
                     onClick={() =>
                       setFormData({ ...formData, status: "not_sure" })
                     }
-                    className={`py-4 rounded-lg border-2 font-medium transition font-body ${
+                    className={`py-4 rounded-lg border-2 font-medium transition-all duration-300 font-lora relative overflow-hidden group ${
                       formData.status === "not_sure"
-                        ? "border-yellow-400 bg-yellow-50 text-yellow-700 shadow-lg"
-                        : "border-rose-200 hover:border-yellow-300 bg-rose-50/30"
+                        ? "border-yellow-400 bg-yellow-50/80 text-yellow-700 shadow-md"
+                        : "border-rose-200 hover:border-yellow-300 bg-white/80 hover:shadow-sm"
                     }`}
                   >
-                    ? Not Sure
+                    <span className="relative z-10">? Not Sure</span>
+                    {formData.status === "not_sure" && (
+                      <span className="absolute -right-1 -bottom-1 w-8 h-8 text-yellow-200 animate-pulse">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z" fill="currentColor" />
+                        </svg>
+                      </span>
+                    )}
                   </button>
                   <button
                     onClick={() =>
                       setFormData({ ...formData, status: "declined" })
                     }
-                    className={`py-4 rounded-lg border-2 font-medium transition font-body ${
+                    className={`py-4 rounded-lg border-2 font-medium transition-all duration-300 font-lora relative overflow-hidden group ${
                       formData.status === "declined"
-                        ? "border-gray-400 bg-gray-100 text-gray-700 shadow-lg"
-                        : "border-rose-200 hover:border-gray-400 bg-rose-50/30"
+                        ? "border-red-400 bg-red-50/80 text-red-700 shadow-md"
+                        : "border-rose-200 hover:border-red-300 bg-white/80 hover:shadow-sm"
                     }`}
                   >
-                    ✗ Decline
+                    <span className="relative z-10">✗ Regretfully Decline</span>
+                    {formData.status === "declined" && (
+                      <span className="absolute -right-1 -bottom-1 w-8 h-8 text-red-200 animate-pulse">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor" />
+                        </svg>
+                      </span>
+                    )}
                   </button>
+                </div>
+                <div className="absolute -left-3 -top-3 w-8 h-8 text-rose-300 opacity-50 transform rotate-180">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 12C6 12 10 8 12 6C14 8 18 12 18 12C18 12 14 16 12 18C10 16 6 12 6 12Z" stroke="currentColor" strokeWidth="1" fill="none" />
+                  </svg>
+                </div>
+                <div className="absolute -right-3 -bottom-3 w-8 h-8 text-rose-300 opacity-50">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 12C6 12 10 8 12 6C14 8 18 12 18 12C18 12 14 16 12 18C10 16 6 12 6 12Z" stroke="currentColor" strokeWidth="1" fill="none" />
+                  </svg>
                 </div>
               </div>
 
@@ -639,9 +975,27 @@ export default function InvitationPage() {
                   isSubmitting
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-gradient-to-r from-rose-400 via-pink-400 to-rose-500 hover:from-rose-500 hover:via-pink-500 hover:to-rose-600 hover:shadow-xl"
-                } text-white`}
+                } text-white relative overflow-hidden group`}
               >
-                {isSubmitting ? "Submitting..." : "Submit RSVP"}
+                <span className="relative z-10 flex items-center justify-center">
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Submitting...
+                    </span>
+                  ) : (
+                    <>
+                      Submit RSVP
+                      <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </>
+                  )}
+                </span>
+                <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
               </button>
             </div>
           )}

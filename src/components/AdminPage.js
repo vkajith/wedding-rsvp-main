@@ -61,8 +61,8 @@ export default function AdminPage() {
 
   if (!isAdminAuth) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-6">
+        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-200">
           <Lock className="w-12 h-12 text-gray-600 mx-auto mb-6" />
           <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
           <input
@@ -80,7 +80,7 @@ export default function AdminPage() {
                 }
               }
             }}
-            className="w-full px-4 py-3 rounded-lg border outline-none mb-2"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none mb-2 bg-white focus:ring-2 focus:ring-gray-300 focus:border-gray-400 transition"
             placeholder="Password"
           />
           <p className="text-sm text-gray-500 mb-4">
@@ -98,13 +98,13 @@ export default function AdminPage() {
                 alert("Incorrect password");
               }
             }}
-            className="w-full bg-gray-800 text-white py-3 rounded-lg mb-2"
+            className="w-full bg-gray-800 hover:bg-gray-900 transition text-white py-3 rounded-lg mb-2"
           >
             Login
           </button>
           <button
             onClick={() => (window.location.href = "/")}
-            className="w-full text-gray-600"
+            className="w-full text-gray-700 hover:text-gray-900"
           >
             Back to Invitation
           </button>
@@ -115,13 +115,13 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between">
-          <h1 className="text-2xl font-bold">Wedding RSVP Dashboard</h1>
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-semibold text-gray-900">Wedding RSVP Dashboard</h1>
           <div className="flex gap-2">
             <button
               onClick={() => (window.location.href = "/")}
-              className="px-4 py-2 text-gray-600"
+              className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
             >
               View Site
             </button>
@@ -130,7 +130,7 @@ export default function AdminPage() {
                 setIsAdminAuth(false);
                 setAdminPassword("");
               }}
-              className="px-4 py-2 bg-gray-200 rounded-lg"
+              className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
             >
               Logout
             </button>
@@ -180,11 +180,9 @@ export default function AdminPage() {
                   label: "Attendees",
                 },
               ].map((stat, i) => (
-                <div key={i} className="bg-white rounded-xl p-6 shadow">
-                  <stat.icon
-                    className={`w-8 h-8 text-${stat.color}-500 mb-2`}
-                  />
-                  <p className="text-3xl font-bold">{stat.value}</p>
+                <div key={i} className="bg-white rounded-xl p-6 shadow-lg ring-1 ring-gray-100 hover:shadow-xl transition hover:-translate-y-0.5">
+                  <stat.icon className={`w-8 h-8 text-${stat.color}-600 mb-2`} />
+                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
                   <p className="text-gray-600 text-sm">{stat.label}</p>
                 </div>
               ))}
@@ -199,7 +197,7 @@ export default function AdminPage() {
                     placeholder="Search..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg outline-none"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg outline-none bg-white focus:ring-2 focus:ring-gray-300 focus:border-gray-400 transition"
                   />
                 </div>
                 <div className="flex gap-2">
@@ -207,16 +205,16 @@ export default function AdminPage() {
                     <button
                       key={f}
                       onClick={() => setFilterStatus(f)}
-                      className={`px-4 py-2 rounded-lg ${
+                      className={`px-4 py-2 rounded-full border transition ${
                         filterStatus === f
                           ? f === "all"
-                            ? "bg-gray-800 text-white"
+                            ? "bg-gray-800 text-white border-gray-800 shadow-sm"
                             : f === "accepted"
-                            ? "bg-green-500 text-white"
+                            ? "bg-green-500 text-white border-green-600 shadow-sm"
                             : f === "not_sure"
-                            ? "bg-yellow-500 text-white"
-                            : "bg-red-500 text-white"
-                          : "bg-gray-200"
+                            ? "bg-yellow-500 text-white border-yellow-600 shadow-sm"
+                            : "bg-red-500 text-white border-red-600 shadow-sm"
+                          : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
                       }`}
                     >
                       {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -224,7 +222,7 @@ export default function AdminPage() {
                   ))}
                   <button
                     onClick={handleExport}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center gap-2"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow hover:from-blue-600 hover:to-blue-700 transition flex items-center gap-2"
                   >
                     <Download className="w-4 h-4" />
                     Export CSV
@@ -235,7 +233,7 @@ export default function AdminPage() {
 
             <div className="bg-white rounded-xl shadow overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b">
+                <thead className="sticky top-0 bg-white border-b z-10">
                   <tr>
                     {[
                       "Name",
@@ -257,11 +255,11 @@ export default function AdminPage() {
                 </thead>
                 <tbody className="divide-y">
                   {filteredRSVPs.map((rsvp) => (
-                    <tr key={rsvp.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm font-medium">
+                    <tr key={rsvp.id} className="odd:bg-white even:bg-gray-50 hover:bg-gray-50/70 transition">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
                         {rsvp.name}
                       </td>
-                      <td className="px-6 py-4 text-sm">{rsvp.phone || "-"}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{rsvp.phone || "-"}</td>
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -283,23 +281,23 @@ export default function AdminPage() {
                         {rsvp.status === "accepted" ? (
                           <div>
                             {rsvp.events?.wedding && (
-                              <div className="text-xs">✓ Wedding</div>
+                              <div className="text-xs text-gray-700">✓ Wedding</div>
                             )}
                             {rsvp.events?.reception && (
-                              <div className="text-xs">✓ Reception</div>
+                              <div className="text-xs text-gray-700">✓ Reception</div>
                             )}
                           </div>
                         ) : (
                           "-"
                         )}
                       </td>
-                      <td className="px-6 py-4 text-sm">{rsvp.guests}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{rsvp.guests}</td>
                       <td className="px-6 py-4 text-sm max-w-xs">
-                        <div className="truncate" title={rsvp.message || ""}>
+                        <div className="truncate text-gray-700" title={rsvp.message || ""}>
                           {rsvp.message || "-"}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm">
+                      <td className="px-6 py-4 text-sm text-gray-700">
                         {new Date(rsvp.timestamp).toLocaleDateString()}
                       </td>
                     </tr>
