@@ -25,30 +25,103 @@ export default function InvitationPage() {
       title: "Wedding Ceremony",
       location: "Girideepam Convention Center, Nalanchira, Thiruvananthapuram",
       details: "Join us to celebrate the wedding.",
+      // Local date-times in IST
       start: "20251223T110000",
       end: "20251223T120000",
       timezone: "Asia/Kolkata",
+      // ISO with timezone for accurate UTC conversion
+      startISO: "2025-12-23T11:00:00+05:30",
+      endISO: "2025-12-23T12:00:00+05:30",
     },
     reception: {
       title: "Wedding Reception",
       location: "Adathara Auditorium, Sulthan Bathery, Wayanad",
       details: "Celebrate with us at the reception.",
+      // Local date-times in IST
       start: "20251226T180000",
       end: "20251226T220000",
       timezone: "Asia/Kolkata",
+      // ISO with timezone for accurate UTC conversion
+      startISO: "2025-12-26T18:00:00+05:30",
+      endISO: "2025-12-26T22:00:00+05:30",
     },
+  };
+
+  // Convert ISO string to ICS UTC format (YYYYMMDDTHHMMSSZ)
+  const toIcsUtc = (isoString) => {
+    const d = new Date(isoString);
+    const pad = (n) => String(n).padStart(2, "0");
+    const yyyy = d.getUTCFullYear();
+    const mm = pad(d.getUTCMonth() + 1);
+    const dd = pad(d.getUTCDate());
+    const HH = pad(d.getUTCHours());
+    const MM = pad(d.getUTCMinutes());
+    const SS = pad(d.getUTCSeconds());
+    return `${yyyy}${mm}${dd}T${HH}${MM}${SS}Z`;
   };
 
   const getGoogleCalendarUrl = (evt) => {
     const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+    const startUtc = evt.startISO ? toIcsUtc(evt.startISO) : `${evt.start}00Z`;
+    const endUtc = evt.endISO ? toIcsUtc(evt.endISO) : `${evt.end}00Z`;
     const params = new URLSearchParams({
       text: evt.title,
-      dates: `${evt.start}/${evt.end}`,
+      dates: `${startUtc}/${endUtc}`,
       details: evt.details,
       location: evt.location,
       ctz: evt.timezone,
     });
     return `${base}&${params.toString()}`;
+  };
+
+  // Build multi-event ICS content for Apple Calendar and others
+  const buildMultiEventICS = (events) => {
+    let ics = "BEGIN:VCALENDAR\n" +
+      "VERSION:2.0\n" +
+      "PRODID:-//Wedding RSVP//EN\n" +
+      "CALSCALE:GREGORIAN\n" +
+      "METHOD:PUBLISH\n";
+
+    events.forEach((evt) => {
+      const dtStart = toIcsUtc(evt.startISO);
+      const dtEnd = toIcsUtc(evt.endISO);
+      const uid = `${evt.title.replace(/\s+/g, "-")}-${dtStart}@wedding-rsvp`;
+      const desc = evt.details ? evt.details.replace(/\n/g, "\\n") : "";
+      ics += "BEGIN:VEVENT\n" +
+        `UID:${uid}\n` +
+        `DTSTAMP:${dtStart}\n` +
+        `DTSTART:${dtStart}\n` +
+        `DTEND:${dtEnd}\n` +
+        `SUMMARY:${evt.title}\n` +
+        `LOCATION:${evt.location}\n` +
+        (desc ? `DESCRIPTION:${desc}\n` : "") +
+        "END:VEVENT\n";
+    });
+
+    ics += "END:VCALENDAR";
+    return ics;
+  };
+
+  const downloadIcs = (filename, content) => {
+    const blob = new Blob([content], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAcceptedEventsIcs = () => {
+    if (!submittedRSVP) return;
+    const events = [];
+    if (submittedRSVP.events?.wedding) events.push(calendarEvents.wedding);
+    if (submittedRSVP.events?.reception) events.push(calendarEvents.reception);
+    if (events.length === 0) return;
+    const ics = buildMultiEventICS(events);
+    downloadIcs("accepted-events.ics", ics);
   };
 
   const galleryImages = [
@@ -725,6 +798,14 @@ export default function InvitationPage() {
                         Add Reception to Calendar
                       </a>
                     )}
+                  </div>
+                  <div className="mt-3 flex items-center justify-center">
+                    <button
+                      onClick={downloadAcceptedEventsIcs}
+                      className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                    >
+                      Add all accepted to Apple Calendar (.ics)
+                    </button>
                   </div>
                 </div>
               )}
