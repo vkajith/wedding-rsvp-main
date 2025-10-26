@@ -703,7 +703,6 @@ export default function InvitationPage() {
 
               {submittedRSVP?.status === "accepted" && (
                 <div className="mt-4">
-                  <p className="text-gray-700 mb-3 font-medium">Add to your calendar</p>
                   <div className="flex items-center justify-center gap-3 flex-wrap">
                     {submittedRSVP?.events?.wedding && (
                       <a
