@@ -100,7 +100,18 @@ export default function InvitationPage() {
       name: "Anisree Suresh",
       backgroundImage:
         "https://res.cloudinary.com/dqafneas4/image/upload/v1760722370/WhatsApp_Image_2025-10-17_at_23.01.15_nyozp3.jpg",
-      msg: "Watching you both together fills our hearts with joy. May your journey be blessed with endless love.",
+      msg: "Wishing you both loads of love and happiness. So excited!!!",
+    },
+    {
+      name: "Chikku",
+      backgroundImage:
+        "https://res.cloudinary.com/dqafneas4/image/upload/v1762953134/WhatsApp_Image_2025-11-12_at_18.39.00_rs415o.jpg",
+      msg: "Congratulations to you both. And good luck Ash😑!"  
+    },
+    {
+      name: "Poko",
+      backgroundImage: "https://res.cloudinary.com/dqafneas4/image/upload/v1762953134/WhatsApp_Image_2025-11-12_at_18.39.00_1_b0nv6n.jpg",
+      msg: "Yay! My Chinju aunty and Ash are getting married! I can't wait to celebrate and have lots of fun in India",
     },
     {
       name: "Sneezu",
@@ -108,6 +119,7 @@ export default function InvitationPage() {
         "https://res.cloudinary.com/dqafneas4/image/upload/v1760722371/WhatsApp_Image_2025-10-17_at_23.01.52_mlgkxe.jpg",
       msg: "With lots of love!",
     },
+    
   ];
 
   useEffect(() => {
